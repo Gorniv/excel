@@ -1103,7 +1103,8 @@ class Sheet {
     }
 
     cell._value = value;
-    cell._cellStyle = CellStyle(numberFormat: NumFormat.defaultFor(value));
+    cell._cellStyle = value?.cellStyle ??
+        CellStyle(numberFormat: NumFormat.defaultFor(value));
     if (cell._cellStyle != NumFormat.standard_0) {
       _excel._styleChanges = true;
     }

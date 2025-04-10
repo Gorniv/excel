@@ -108,13 +108,17 @@ class Data extends Equatable {
 }
 
 sealed class CellValue {
-  const CellValue();
+  const CellValue({
+    this.cellStyle,
+  });
+
+  final CellStyle? cellStyle;
 }
 
 class FormulaCellValue extends CellValue {
   final String formula;
 
-  const FormulaCellValue(this.formula);
+  const FormulaCellValue(this.formula, {super.cellStyle});
 
   @override
   String toString() {
@@ -133,7 +137,7 @@ class FormulaCellValue extends CellValue {
 class IntCellValue extends CellValue {
   final int value;
 
-  const IntCellValue(this.value);
+  const IntCellValue(this.value, {super.cellStyle});
 
   @override
   String toString() {
@@ -152,7 +156,7 @@ class IntCellValue extends CellValue {
 class DoubleCellValue extends CellValue {
   final double value;
 
-  const DoubleCellValue(this.value);
+  const DoubleCellValue(this.value, {super.cellStyle});
 
   @override
   String toString() {
@@ -177,6 +181,7 @@ class DateCellValue extends CellValue {
     required this.year,
     required this.month,
     required this.day,
+    super.cellStyle,
   })  : assert(month <= 12 && month >= 1),
         assert(day <= 31 && day >= 1);
 
@@ -213,7 +218,7 @@ class DateCellValue extends CellValue {
 class TextCellValue extends CellValue {
   final TextSpan value;
 
-  TextCellValue(String text) : value = TextSpan(text: text);
+  TextCellValue(String text, {super.cellStyle}) : value = TextSpan(text: text);
   TextCellValue.span(this.value);
 
   @override
@@ -233,7 +238,7 @@ class TextCellValue extends CellValue {
 class BoolCellValue extends CellValue {
   final bool value;
 
-  const BoolCellValue(this.value);
+  const BoolCellValue(this.value, {super.cellStyle});
 
   @override
   String toString() {
@@ -262,6 +267,7 @@ class TimeCellValue extends CellValue {
     this.second = 0,
     this.millisecond = 0,
     this.microsecond = 0,
+    super.cellStyle,
   })  : assert(hour >= 0),
         assert(minute <= 60 && minute >= 0),
         assert(second <= 60 && second >= 0),
@@ -350,6 +356,7 @@ class DateTimeCellValue extends CellValue {
     this.second = 0,
     this.millisecond = 0,
     this.microsecond = 0,
+    super.cellStyle,
   })  : assert(month <= 12 && month >= 1),
         assert(day <= 31 && day >= 1),
         assert(hour <= 24 && hour >= 0),
