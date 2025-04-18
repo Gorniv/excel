@@ -13,15 +13,43 @@ class _SharedStringsMaintainer {
     return _mapString[val];
   }
 
-  SharedString addFromString(String val) {
-    final newSharedString = SharedString(
-        node: XmlElement(XmlName('si'), [], [
-      XmlElement(XmlName('t'),
-          [XmlAttribute(XmlName("space", "xml"), "preserve")], [XmlText(val)]),
-    ]));
+  String sanitizeFast(String s) {
+    final sb = StringBuffer();
+    int? prev;
+    for (final r in s.runes) {
+      if (r == 9 || r == 10 || r == 13 || r >= 32 && r != 0x7F) {
+        if (r == 13) {
+          // CR
+          prev = 13;
+          continue; // wait for possible LF
+        }
+        if (prev == 13 && r == 10) {
+          // CRLF → just LF
+          sb.writeCharCode(10);
+        } else {
+          sb.writeCharCode(r);
+        }
+        prev = r;
+      }
+    }
+    return sb.toString().trim();
+  }
 
-    add(newSharedString, val);
-    return newSharedString;
+  SharedString addFromString(String raw) {
+    final clean = sanitizeFast(raw);
+
+    final shared = SharedString(
+      node: XmlElement(XmlName('si'), [], [
+        XmlElement(
+          XmlName('t'),
+          [XmlAttribute(XmlName('space', 'xml'), 'preserve')],
+          [XmlText(clean)],
+        ),
+      ]),
+    );
+
+    add(shared, clean); // use the clean key
+    return shared;
   }
 
   void add(SharedString val, String key) {
