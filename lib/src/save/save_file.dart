@@ -18,12 +18,18 @@ class Save {
     ], []));
   }
 
-  int defaultSizeFont = 10;
-  double delta = 10 / 13;
+  static int defaultSizeFont = 10;
+  static double delta = 10 / 13;
+  static int? limitRowAutoFit;
   double _calcAutoFitColumnWidth(Sheet sheet, int column) {
     var maxWidth = 0.0;
-    sheet._sheetData.forEach((key, value) {
-      print('key: $key, value: $value');
+    int index = 0;
+    for (var key in sheet._sheetData.keys) {
+      if (limitRowAutoFit != null && limitRowAutoFit! > index) {
+        break;
+      }
+      final value = sheet._sheetData[key]!;
+
       if (value.containsKey(column) &&
           value[column]!.value is! FormulaCellValue) {
         final size = value[column]!.cellStyle?.fontSize ?? defaultSizeFont;
@@ -43,7 +49,9 @@ class Save {
               maxWidth);
         }
       }
-    });
+
+      index = index + 1;
+    }
 
     return maxWidth / 1;
   }
