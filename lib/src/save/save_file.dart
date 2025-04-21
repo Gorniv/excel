@@ -18,17 +18,34 @@ class Save {
     ], []));
   }
 
+  int defaultSizeFont = 10;
+  double delta = 0.82;
   double _calcAutoFitColumnWidth(Sheet sheet, int column) {
-    var maxNumOfCharacters = 0;
+    var maxWidth = 0.0;
     sheet._sheetData.forEach((key, value) {
+      print('key: $key, value: $value');
       if (value.containsKey(column) &&
           value[column]!.value is! FormulaCellValue) {
-        maxNumOfCharacters =
-            max(value[column]!.value.toString().length, maxNumOfCharacters);
+        final size = value[column]!.cellStyle?.fontSize ?? defaultSizeFont;
+        // check wrapping
+        if (value[column]!.cellStyle?.wrap == TextWrapping.WrapText) {
+          final split = value[column]!.value.toString().split('\n');
+          for (var i = 0; i < split.length; i++) {
+            maxWidth = max(
+                split[i].trim().length / (size / defaultSizeFont) * delta,
+                maxWidth);
+          }
+        } else {
+          maxWidth = max(
+              value[column]!.value.toString().trim().length /
+                  (size / defaultSizeFont) *
+                  delta,
+              maxWidth);
+        }
       }
     });
 
-    return ((maxNumOfCharacters * 7.0 + 9.0) / 7.0 * 256).truncate() / 256;
+    return maxWidth / 1;
   }
 
   /*   XmlElement _replaceCell(String sheet, XmlElement row, XmlElement lastCell,

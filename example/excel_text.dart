@@ -15,7 +15,7 @@ Dear HWilliams26,\n\nThank you for sharing your thoughts with us. We're sorry to
   sheet!.appendRow([data]);
   final bytes = excel.encode();
   if (bytes != null) {
-    File('example/text.xlsx')
+    File('example/test/excel_text.xlsx')
       ..createSync()
       ..writeAsBytesSync(bytes);
   }

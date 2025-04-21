@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "multi_line",
+            "request": "launch",
+            "type": "dart",
+            "program": "example/multi_line.dart",
+        },
+        {
+            "name": "excel_text",
+            "request": "launch",
+            "type": "dart",
+            "program": "example/excel_text.dart",
+        },
+        {
+            "name": "Dart: Run all Tests",
+            "type": "dart",
+            "request": "launch",
+            "program": "./test/"
+        }
+    ]
+}

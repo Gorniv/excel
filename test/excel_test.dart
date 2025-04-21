@@ -1101,4 +1101,104 @@ void main() {
       reason: 'Decoding the file should not throw any exception',
     );
   });
+
+  test('Saving XLSX File with max width calc', () {
+    var excel = Excel.createExcel();
+    var sheet = excel['Sheet1'];
+    final bigText = '''
+"ASO.dev – The Ultimate Alternative Client for App Store Connect with comprehensive App Store Optimization (ASO) Tools, empowering your app's growth. Automate your app release process seamlessly, saving valuable time and ensuring accuracy for every update.
+
+Your API keys and sensitive data are securely stored on your device.
+Optimize app metadata securely and easily via official App Store Connect API.
+Requests to App Store Connect are made directly from your device—no server-side requests, ensuring maximum security.
+Manage security flexibly with individual or team-based API keys.
+
+- Smart Metadata Editor:
+Create unique, validated metadata with real-time keyword analytics, competitor insights, and seamless rollback options. Simplify macOS and iOS releases with instant metadata copying.
+
+- Bulk Editor:
+Rapidly manage updates across multiple localizations. Instantly translate content using AI (OpenAI, Claude, DeepSeek), Google Translate, or DeepL. Easily detect duplicates and compare previous versions.
+
+- Interactive Cross-Localization Table:
+Maximize global visibility by validating and optimizing metadata across 60 countries. Tailored suggestions ensure strategic keyword deployment.
+
+- Subscription Pricing Management:
+Seamlessly manage subscriptions, localize descriptions, and optimize performance with effortless A/B testing.
+Optimize your app’s global revenue strategy by managing prices, applying multipliers (Netflix, Big Mac, PPP), apply VAT by country.
+
+- Bulk upload hundreds of screenshots and videos effortlessly with automatic device and locale detection and perfect sizing.
+
+- Custom Product Pages (CPP):
+Tailor app pages for targeted marketing and A/B testing. Easily copy and create customized CPPs with localized content, videos, and screenshots.
+
+- In-App Events:
+Boost user engagement and visibility through compelling events aligned with global holidays and key marketing dates. Localize events effortlessly for maximum impact.
+Visualize trending events and gain market insights through interactive heatmaps and detailed event analytics.
+
+- Unlimited ASO:
+Enjoy limitless keyword and project management capabilities for unparalleled optimization.
+
+- ASO Check:
+Instantly evaluate app performance across all App Store locales, identify optimization opportunities, and enhance global reach.
+
+- Comprehensive App Info:
+Gain deep insights into keyword rankings, reviews, competitor strategies, and app metrics. Analyze detailed performance data to stay ahead of competition.
+
+- Keywords Ranking & Competitor Spy:
+Track unlimited keywords, analyze competitor strategies, and export comprehensive keyword data for strategic ASO decisions.
+
+- Keyword Lists & Competitor Analysis:
+Efficiently organize, track, and manage keywords and competitor apps. Identify opportunities to differentiate and outperform the competition.
+
+- Top Apps & Category Ranking:
+Analyze top-performing apps across various categories, platforms, and countries, monitoring trends and competitor positioning effectively.
+
+- User Reviews Management:
+Easily manage, translate, and respond to user reviews across languages. Use AI-driven responses and swiftly report inappropriate content.
+
+- Metrics & Analytics:
+Monitor app performance with detailed metrics, including impressions, views, revenue, and user engagement. Make data-driven decisions effortlessly.
+
+- Streamline your localization process, translating content instantly across multiple languages and formats with AI-powered tools.
+
+- Project Sharing & Collaboration:
+Collaborate effectively with flexible access controls, enabling efficient teamwork and client management.
+
+- Timeline & Historical Insights:
+Track key app changes and metadata updates over time, gaining insights for improved future strategies. Historical data is immediately available.
+
+- iTunes Country Switcher
+
+Join thousands of developers and marketers who trust ASO.dev to simplify their ASO workflow and drive app growth.
+Terms and Conditions - https://aso.dev/terms/"
+''';
+    sheet.appendRow([
+      TextCellValue('1 test',
+          cellStyle: CellStyle(textWrapping: TextWrapping.WrapText)),
+    ]);
+    sheet.appendRow([
+      TextCellValue(bigText,
+          cellStyle: CellStyle(textWrapping: TextWrapping.WrapText)),
+    ]);
+    sheet.setColumnAutoFit(0);
+
+    //stopwatch.reset();
+    List<int>? fileBytes = excel.save();
+    //print('saving executed in ${stopwatch.elapsed}');
+    if (fileBytes != null) {
+      File(Directory.current.path + '/tmp/exampleOut_max.xlsx')
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(fileBytes);
+    }
+
+    var newFile = './tmp/exampleOut_max.xlsx';
+    var newFileBytes = File(newFile).readAsBytesSync();
+    var newExcel = Excel.decodeBytes(newFileBytes);
+
+    // delete tmp folder
+    new Directory('./tmp').delete(recursive: true);
+    final widths = newExcel.tables['Sheet1']!.getColumnWidth(0);
+    print('widths: $widths');
+    expect(widths > 10.0 && widths < 230.0, isTrue);
+  });
 }
