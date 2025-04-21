@@ -19,7 +19,7 @@ class Save {
   }
 
   int defaultSizeFont = 10;
-  double delta = 0.82;
+  double delta = 10 / 12;
   double _calcAutoFitColumnWidth(Sheet sheet, int column) {
     var maxWidth = 0.0;
     sheet._sheetData.forEach((key, value) {
